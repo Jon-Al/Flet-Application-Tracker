@@ -67,6 +67,30 @@ class FieldData:
             'default_value': self.default_value
         }
 
+    def __eq__(self, other):
+        return self.original_text == other.original_text
+
+    def __ne__(self, other):
+        return self.original_text != other.original_text
+
+    def __lt__(self, other):
+        return self.original_text < other.original_text
+
+    def __gt__(self, other):
+        return self.original_text > other.original_text
+
+    def __le__(self, other):
+        return self.original_text <= other.original_text
+
+    def __ge__(self, other):
+        return self.original_text >= other.original_text
+
+    def __bool__(self):
+        return bool(self.original_text)
+
+    def __hash__(self):
+        return hash(self.original_text)
+
 
 class PlaceholderParser:
     @staticmethod

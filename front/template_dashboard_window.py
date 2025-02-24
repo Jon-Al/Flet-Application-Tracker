@@ -1,6 +1,6 @@
 import os
 from sqlite3 import DatabaseError
-from typing import List, Optional, Dict, Set
+from typing import List, Optional, Dict, Set, Tuple
 
 import flet as ft
 from flet.core.colors import Colors
@@ -20,7 +20,7 @@ from front.controls.group_form import GroupForm
 from front.controls.make_file_picker import create_file_picker_controls
 from front.insert_form_components import create_employer_group_form
 from utils.enums import PlaceholderType
-from utils.path_utils import resume_or_cover_letter
+from utils.path_utils import resume_or_cover_letter, PathFlag, PathManager
 
 
 class FilePickersRow(ft.Container):
@@ -178,14 +178,17 @@ def make_input_field(field: FieldData):
     return input_field
 
 
-def create_ph_field_group(placeholders_set: Optional[Set[str]]) -> GroupForm:
+def create_ph_field_group(placeholders_set: Optional[Set[str]]):
     group_form: GroupForm = GroupForm()
+    field_set = set()
     for ph in placeholders_set:
         field: FieldData = PlaceholderParser.parse_fields(ph)
+        if field in field_set:
+            continue
         text_field: TextField = make_input_field(field)
         text_field.default_value = field
         group_form.add(field.original_text, text_field)
-    return group_form
+    return group_form, field_set
 
 
 def create_placeholders_area(placeholders_set: Optional[Set[str]],
@@ -269,14 +272,12 @@ def create_placeholders_area(placeholders_set: Optional[Set[str]],
 def template_dashboard_window():
     column = ft.Column(expand=True, scroll=ScrollMode.AUTO)
     container = ft.Container(content=column, expand=True)
-    field_groups_collector: Dict[str, GroupForm] = {}
 
     def apply_replacements(doc_path, replacements, job_title, employer_name, job_id, doc_type, on_complete):
         nonlocal result_label
         nonlocal container
-        full_path = resume_or_cover_letter(doc_path)
         file_name = os.path.basename(doc_path)
-        doc_manager = DocManager(full_path)
+        doc_manager = DocManager(PathManager.resolve_path(doc_path, PathFlag.FROM_PROJECT_ROOT))
         if not doc_manager.callable:
             return
         doc_manager.apply_replacements(replacements)
@@ -434,8 +435,7 @@ def template_dashboard_window():
             :param placeholders_: The list of placeholders.
             :param width: The width of the placeholder area.
             """
-
-            field_group = create_ph_field_group(placeholders_)
+            sorted_ph = sorted(placeholders_)
             default_row = ft.ResponsiveRow(
                 spacing=5,
                 run_spacing=20,
@@ -445,30 +445,38 @@ def template_dashboard_window():
                 run_spacing=20,
             )
 
-            placeholders_list.controls.append(Text(title, theme_style=TextThemeStyle.TITLE_MEDIUM))
-            for ph in placeholders_:
+            for ph in sorted_ph:
+                if ph is None or ph == '':
+                    continue
                 field = PlaceholderParser.parse_fields(ph)
+                v = len(field.label)
+                cols = min(2 + (v // 32), 12)
                 text_field = ft.TextField(
                     label=field.label,
                     value=field.default_value,
                     multiline=True,  # Allow multiline input
                     min_lines=2,
                     max_lines=2,
-                    col=2,
+                    col=cols,
                     data=field)
-
                 if field.type == PlaceholderType.DEFAULT_PLACEHOLDER:
                     default_row.controls.append(text_field)
                 elif field.type == PlaceholderType.REQUIRED_PLACEHOLDER:
                     required_row.controls.append(text_field)
 
+            placeholders_list.controls.append(Text(title, theme_style=TextThemeStyle.HEADLINE_LARGE))
             # Add grouped rows to the placeholder list
             if default_row.controls:
-                placeholders_list.controls.append(ft.Text("Default Placeholders:", size=14, weight=ft.FontWeight.BOLD))
+                placeholders_list.controls.append(ft.Divider())
+                placeholders_list.controls.append(
+                    ft.Text("Default Placeholders:", theme_style=TextThemeStyle.HEADLINE_MEDIUM))
                 placeholders_list.controls.append(default_row)
             if required_row.controls:
-                placeholders_list.controls.append(ft.Text("Required Placeholders:", size=14, weight=ft.FontWeight.BOLD))
+                placeholders_list.controls.append(ft.Divider())
+                placeholders_list.controls.append(
+                    ft.Text("Required Placeholders:", theme_style=TextThemeStyle.HEADLINE_MEDIUM))
                 placeholders_list.controls.append(required_row)
+
 
         nonlocal placeholders
 
@@ -514,6 +522,7 @@ def template_dashboard_window():
         def on_complete(doc_name):
             generate_button.disabled = False
             result_label.value = f"{result_label.value}\nConversion complete. Output: {str(doc_name)}.\n"
+            result_label.update()
             nonlocal sound
             sound.play()
             update_page(e)
@@ -686,7 +695,7 @@ def template_dashboard_window():
         ft.Row([  # ROW 2
             job_notes_field
         ], spacing=5, expand=True, alignment=ft.MainAxisAlignment.START),
-        ft.Row([  # Results Row
+        ft.Row([
             add_job_button,
             clear_job_button,
             add_job_result_label
@@ -707,7 +716,7 @@ def template_dashboard_window():
                 employer_notes_field,
             ], spacing=5, expand_loose=True),
 
-            ft.Row([  # Results Row
+            ft.Row([
                 add_employer_button,
                 clear_employer_button,
                 add_employer_result_label,
@@ -716,8 +725,6 @@ def template_dashboard_window():
     docs_job_picker = ft.Dropdown(label="Select Job",
                                   options=[],
                                   on_change=autofill_placeholders_from_dropdown,
-                                  # options_fill_horizontally=True,
-                                  # expand_loose=False,
                                   expand=True
                                   )
     file_pickers.add_column('Pick Job', docs_job_picker, generate_button)
@@ -741,11 +748,10 @@ def template_dashboard_window():
     column.controls.extend([
         employer_section, ft.Divider(),
         job_section, ft.Divider(),
-        document_section, ft.Divider(),
-        result_label]
+        document_section, ft.Divider()]
     )
 
-    sound = ft.Audio(src="tada.wav")
+    sound = ft.Audio(src=str(PathManager.resolve_path("resources/tada.wav", PathFlag.R)))
     column.controls.append(sound)
     update_docs_job_picker(docs_job_picker)
     update_employer_dropdown()

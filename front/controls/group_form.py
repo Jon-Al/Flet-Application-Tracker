@@ -43,6 +43,14 @@ class GroupForm:
         for field in self._fields.values():
             field.value = ''
 
+    def items(self):
+        return self._fields.items()
+
+    def values(self):
+        return self._fields.values()
+
+    def keys(self):
+        return self._fields.keys()
 
     @property
     def fields(self) -> Dict[str, FormFields]:

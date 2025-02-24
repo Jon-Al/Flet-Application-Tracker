@@ -117,7 +117,7 @@ class PathManager:
     @staticmethod
     def resolve_path(path: Union[str, Path], flags: Union[List[PathFlag] | PathFlag] = PathFlag.N) -> Path:
         path = Path(path)
-        flags = PathManager._parse_flags(flags)
+        flags = PathManager._parse_flags(flags | PathFlag.N)
         return PathManager._apply_flags(path, flags).resolve()
 
 
