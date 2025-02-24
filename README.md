@@ -9,6 +9,8 @@
 7. Add communication tracking.
 8. Add contacts.
 9. Streamline placeholders - placeholders will use a more consistent pattern (to be defined).
+10. Add a ``requirments.txt``
+11. Use [Black](https://github.com/psf/black) for code formatting (as advised by [Flet](https://flet.dev/)'s official dev team)
 
 ### Current special features
 
@@ -35,9 +37,17 @@ Placeholders are special markers in the text that get replaced with actual value
 
 ### On-Off Placeholders
 
-Once implemented, these will allow dynamic use of a Flet [Switch](https://flet.dev/docs/controls/switch/) to remove entire sections of the text.
+Once implemented, these will allow dynamic use of a [Flet](https://flet.dev/) [Switch](https://flet.dev/docs/controls/switch/) to remove entire sections of the text.
 
 ### Multi-level Placeholders
 
 Once implemented, these will enable nesting, where one placeholder can resolve into another, allowing for structured replacements.
 
+### Other Useful Information
+
+Feedback is welcome; please use "Feedback: Flet_Application_Tracker" in your email's subject. [JASoftware@proton.me](mailto:JASoftware@proton.me) _Feedback welcome!_
+
+### Related Links
+
+* [Felt GitHub repository](https://github.com/flet-dev/flet)
+* [Flet website](https://flet.dev/)
