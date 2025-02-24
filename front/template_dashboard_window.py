@@ -280,49 +280,55 @@ def template_dashboard_window():
         doc_manager = DocManager(PathManager.resolve_path(doc_path, PathFlag.FROM_PROJECT_ROOT))
         if not doc_manager.callable:
             return
+
         doc_manager.apply_replacements(replacements)
+
         result_label.value = f'{result_label.value}\nApplied Replacements to {file_name}'
         new_file_name = f"{file_name.replace('.docx', '')} - {job_title} - {employer_name}.docx"
         pdf_output_path = f"{file_name.replace('.docx', '')} - {job_title}.pdf"
         # Check if there's a Document for this document.
         doc_id = UDH.execute_query(
             "SELECT documentID FROM Documents WHERE jobID = ? AND documentType = ?",
-            (job_id, doc_type),
+            (job_id, doc_type,),
             fetch_mode=-1
         )
+
         if doc_id:  # all good, only ID matters.
-            doc_id = doc_id[0][0]  # Extract the first column of the first row
+            doc_id = doc_id[0]['documentID']  # Extract the first column of the first row
+            print("Marker 3.1")
         else:  # Insert if not.
+            print("Marker 3.2")
             doc_id = UDH.execute_query(
                 "INSERT INTO Documents (jobID, documentType) VALUES (?, ?)",
                 (job_id, doc_type),
                 True
             )
+
         # create new data for storage.
         new_file_path = doc_manager.save_docx(new_file_name)
         new_file_directory = os.path.dirname(new_file_path)
+
         # update label:
         result_label.value = f'{result_label.value}\nSaved the new file to {new_file_path}.'
         check_storage = UDH.execute_query(
             "SELECT StorageID FROM Document_Storage WHERE documentID = ?",
             (doc_id,)
         )
-
         # check storage, insert or update as needed
         if not check_storage:
             UDH.execute_query(
                 "INSERT INTO Document_Storage (documentID, fileType, path, file_name) VALUES (?, ?, ?, ?)",
                 (doc_id, 'docx', new_file_directory, file_name)
             )
-
         else:
             UDH.execute_query(
                 """
                 UPDATE Document_Storage 
                 SET fileType = ?, path = ?, file_name = ?, date_created = datetime('now') 
                 WHERE documentID = ?
-                """, (doc_type, new_file_directory, new_file_name, doc_id))
-
+                """, ('docx', new_file_directory, new_file_name, doc_id))
+        
+        print("Marker 10")
         result_label.value = f'{result_label.value}\nDatabases updated.'
         doc_manager.save_pdf(pdf_output_path)
         json_success = doc_manager.save_placeholders_to_json()
@@ -739,6 +745,7 @@ def template_dashboard_window():
             fetch_placeholders_button,
             auto_fill_button,
             generate_button,
+            result_label
         ],
             spacing=5, expand=True),
         ft.Container(placeholders_list, expand_loose=True,

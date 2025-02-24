@@ -9,7 +9,7 @@ from docx.text.paragraph import Paragraph
 from docx2pdf import convert
 from flet.utils import deprecated
 
-from core.global_handlers import PLACEHOLDERS_FOLDER
+from core.global_handlers import PLACEHOLDERS_FOLDER, LOGGER
 from utils.json_import_export import import_json, save_json
 from utils.path_utils import *
 
@@ -76,6 +76,7 @@ class DocManager:
                 with open(json_path, "w") as f:
                     json.dump({}, f)
             except Exception as e:
+                LOGGER.log(e)
                 print(f"Failed to create JSON file at {json_path}: {e}")
 
         return json_path
@@ -100,8 +101,6 @@ class DocManager:
             return
         if len(self.placeholders) <= 0 or force_refresh:
             self._update_placeholders()
-        for k, v in self.placeholders.items():
-            print(f"{k}: {v}")
         return self.placeholders
 
     def _fill_empty_placeholders(self):
@@ -324,16 +323,12 @@ class DocManager:
                 process_xml_hyperlinks(section.footer)
 
     def save_docx(self, output_name):
-        """
-        TODO: Path management.
-        save file to docx in path.
-        """
         if not self.callable:
             return
 
         self.save_docx_path = str(self.output_dir.resolve_new_path.with_name(output_name))
         self.doc.save(self.save_docx_path)
-        print('Saved to ' + self.save_docx_path)
+        LOGGER.log('Saved to ' + self.save_docx_path)
         return self.save_docx_path
 
     def save_pdf(self, output_name: str):
@@ -342,32 +337,9 @@ class DocManager:
         """
         if not self.callable:
             return
-
-
-        def rename_file_by_creation(path: str, file_name: str) -> None:
-            """
-            Renames a file in the specified path if it exists, prefixing it with its creation timestamp.
-
-            :param path: The directory path where the file is located.
-            :param file_name: The name of the file to check and rename.
-            """
-
-            file_path = os.path.join(path, file_name)
-            if os.path.exists(file_path):
-                creation_time = os.path.getatime(file_path)
-                dt_m = datetime.fromtimestamp(creation_time)
-                formatted_time = dt_m.strftime("%Y-%m-%d %H-%M")
-                new_file_name = f"[{formatted_time}] {file_name}"
-                new_file_path = os.path.join(path, new_file_name)
-                try:
-                    os.rename(file_path, new_file_path)
-                except OSError:
-                    print('Rename failed')
-                print('Renamed to ' + new_file_name)
-
-        rename_file_by_creation(get_project_root() + '/PDF Output/', output_name)
+        rename_file_by_creation(PathManager.resolve_path('/PDF Output/' + output_name, PathFlag.R | PathFlag.C))
         out = normalize_path(get_project_root() + '/PDF Output/' + output_name)
-        print('Saved to ' + out)
+        LOGGER.log('Saved to ' + out)
         convert(self.save_docx_path, out)
         return out
 

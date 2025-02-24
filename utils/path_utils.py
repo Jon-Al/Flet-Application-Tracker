@@ -346,3 +346,25 @@ class PathManager:
             self._new_path = self.get_next_available_name(self._new_path)
         self._flags |= PathFlag.CHANGED_FILENAME
         return self._new_path
+
+
+def rename_file_by_creation(path: Path) -> None:
+    """
+    Renames a file in the specified path if it exists, prefixing it with its creation timestamp.
+
+    :param path: The directory path where the file is located.
+    """
+    if not path.exists():
+        return
+    file_name = path.name
+    if os.path.exists(path):
+        creation_time = os.path.getatime(path)
+        dt_m = datetime.fromtimestamp(creation_time)
+        formatted_time = dt_m.strftime("%Y-%m-%d %H-%M")
+        new_file_name = f"[{formatted_time}] {file_name}"
+        new_file_path = os.path.join(path, new_file_name)
+        try:
+            os.rename(path, new_file_path)
+        except OSError:
+            print('Rename failed')
+        print('Renamed to ' + new_file_name)
