@@ -1,12 +1,12 @@
 import flet as ft
 from front.controls import GroupForm
-from front.insert_form_components import job_form, employer_group_form
+from front.insert_form_components import job_form, create_employer_group_form
 
 
 # Example usage in a Page
 def test1(page: ft.Page):
     jobs = job_form()
-    employer_form = employer_group_form()
+    employer_form = create_employer_group_form()
     page.add(jobs)
     page.add(employer_form)
     page.update()

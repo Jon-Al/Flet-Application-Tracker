@@ -52,6 +52,8 @@ class GroupForm:
     def values(self):
         return {key: field.value for key, field in self.fields.items()}
 
+    def __getitem__(self, index):
+        return self.fields[index]
 
     def get_value(self, key):
         return self.fields[key].value

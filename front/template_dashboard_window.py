@@ -18,6 +18,7 @@ from core.placeholder_parsing import FieldData, PlaceholderParser
 from front.controls.create_button_methods import create_add_button, create_clear_button, create_restore_button
 from front.controls.group_form import GroupForm
 from front.controls.make_file_picker import create_file_picker_controls
+from front.insert_form_components import create_employer_group_form
 from utils.enums import PlaceholderType
 from utils.path_utils import resume_or_cover_letter
 
@@ -146,7 +147,11 @@ def get_title_and_employer(job_id: int) -> tuple[str, str]:
 
 
 def update_page(e):
-    e.control.page.update()
+    if hasattr(e, 'page'):
+        e.page.update()
+    elif hasattr(e, 'control'):
+        e.control.update()
+    e.page.update()
 
 
 def make_input_field(field: FieldData):
@@ -368,6 +373,14 @@ def template_dashboard_window():
         employers = employers_from_db
 
     def add_employer(e):
+        nonlocal result_label
+        text = f"""{e.control}, 
+
+"""
+        result_label.text = e.control
+        result_label.text = e.control
+        result_label.text = e.control
+        result_label.text = e.control
         if not employer_name_field or employer_name_field.value == '' or employer_name_field.value is None:
             add_employer_result_label.value = "Please insert the employer name."
             update_page(e)
@@ -500,7 +513,7 @@ def template_dashboard_window():
 
         def on_complete(doc_name):
             generate_button.disabled = False
-            result_label.value = f"{result_label.value}\nConversion complete. Output: {doc_name}.\n"
+            result_label.value = f"{result_label.value}\nConversion complete. Output: {str(doc_name)}.\n"
             nonlocal sound
             sound.play()
             update_page(e)
@@ -615,9 +628,13 @@ def template_dashboard_window():
     add_employer_result_label = ft.Text(expand=True)
 
     # Employer Input Fields
-    employer_name_field = ft.TextField(label="Employer", expand=True)
-    employer_location_field = ft.TextField(label="Location", value="Toronto, ON", expand=True)
-    employer_notes_field = ft.TextField(label="Notes", expand=True)
+
+    employer_group_form = create_employer_group_form()
+
+    employer_name_field = employer_group_form['employer_name']
+    employer_location_field = employer_group_form['location']
+    employer_notes_field = employer_group_form['notes']
+    employer_industry_field = employer_group_form['industry']
 
     # Job Input Fields
     # Row 1
@@ -684,6 +701,7 @@ def template_dashboard_window():
             ft.Row([  # ROW 1
                 employer_name_field,
                 employer_location_field,
+                employer_industry_field
             ], spacing=5, expand_loose=True),
             ft.Row([  # ROW 2
                 employer_notes_field,

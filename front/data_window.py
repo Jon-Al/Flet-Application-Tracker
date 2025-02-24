@@ -36,8 +36,18 @@ def data_window():
                                               'Applied on',
                                               'Updated', ])
     employers_table = DatabaseView('data/applications.sqlite', 'Employers',
-                                   select_query=r'''SELECT * FROM Employers ''',
-                                   column_names=['ID', 'Employer', 'Industry', 'Location', 'Notes',
+                                   select_query=r'''SELECT employerID as 'ID', 
+                                   employer_name as 'Employer',  
+                                   industry as 'Industry',  
+                                   location as 'Location', 
+                                    notes as 'Notes',
+                                     last_updated as 'Last Updated'
+                                      FROM Employers ''',
+                                   column_names=['ID',
+                                                 'Employer',
+                                                 'Industry',
+                                                 'Location',
+                                                 'Notes',
                                                  'Last Updated'])
     documents_table = DatabaseView('data/applications.sqlite', 'Documents', r"""
 SELECT Documents.jobID                                                AS 'ID',

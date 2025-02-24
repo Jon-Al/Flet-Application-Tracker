@@ -1,7 +1,7 @@
 # Example usage in a Page
 from flet.core.page import Page
 
-from front.insert_form_components import employer_group_form
+from front.insert_form_components import create_employer_group_form
 
 
 def main(page: Page):
@@ -9,7 +9,7 @@ def main(page: Page):
     def on_employer_submit(data):
         print(f"Employer submitted: {data}")
 
-    employer_form = employer_group_form()
+    employer_form = create_employer_group_form()
     page.add(employer_form)
 
 

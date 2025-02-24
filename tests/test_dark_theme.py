@@ -1,8 +1,9 @@
-import pytest
-import flet as ft
 from unittest.mock import MagicMock
 
-from front.controls import theme_toggle_button
+import flet as ft
+import pytest
+
+from front.controls.dark_theme_toggle import theme_toggle_button
 
 
 @pytest.fixture
@@ -16,7 +17,7 @@ def mock_page():
 
 def test_theme_toggle_button(mock_page):
     """Tests the theme toggle button's functionality with rapid clicks."""
-    button = theme_toggle_button(mock_page)
+    button = theme_toggle_button()
 
     # Ensure initial state
     assert mock_page.theme_mode == ft.ThemeMode.LIGHT

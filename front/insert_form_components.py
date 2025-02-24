@@ -44,8 +44,8 @@ def column_sizes(size_ratio: int):
     return size_mapping.get(size_ratio, size_mapping[6])  # Default to size 6 if out of range
 
 
-def employer_group_form(call_after_insert: Optional[Callable] = None,
-                        call_after_clear: Optional[Callable] = None):
+def create_employer_group_form(call_after_insert: Optional[Callable] = None,
+                               call_after_clear: Optional[Callable] = None) -> GroupForm:
     def insert(e):
         nonlocal gf
         data = gf.values
@@ -69,25 +69,27 @@ def employer_group_form(call_after_insert: Optional[Callable] = None,
     employer_name_field = TextField(
         label="Employer Name*",
         hint_text="Enter employer name",
-        col=column_sizes(4)
+        col=column_sizes(4), expand=True,
     )
     industry_field = TextField(
         label="Industry",
         hint_text="Enter industry",
-        col=column_sizes(4)
+        col=column_sizes(4), expand=True,
     )
     location_field = TextField(
         label="Location",
         hint_text="City, Province/State",
-        col=column_sizes(4)
+        col=column_sizes(4),
+        expand=True,
     )
     notes_field = TextField(
         label="Notes",
-        hint_text="Additional notes about employer",
+        tooltip="Additional notes about employer",
         multiline=True,
         min_lines=1,
         max_lines=6,
-        col=column_sizes(6)
+        expand=True,
+        col=column_sizes(12)
     )
     result_text = Text(value='')
     add_button = create_add_button(insert)
