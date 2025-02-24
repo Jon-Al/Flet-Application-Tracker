@@ -1,0 +1,4 @@
+# Project exclude paths
+/data_private/
+/docs_private/
+/subprojects/
