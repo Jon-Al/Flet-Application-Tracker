@@ -547,12 +547,12 @@ def template_dashboard_window():
                 job_title = 'dummy_job_title'
         if not employer_name:
             employer_name = 'dummy_employer_name'
-
         result_label.value = "Generating documents..."
+        result_label.update()
         try:
             generate_button.disabled = True
             if template1_name_field.value:
-                apply_replacements(resume_or_cover_letter(template1_name_field.value),
+                apply_replacements(template1_name_field.value,
                                    replacements.copy(),
                                    job_title,
                                    employer_name,
@@ -560,7 +560,7 @@ def template_dashboard_window():
                                    'resume',
                                    on_complete)
             if template2_name_field.value:
-                apply_replacements(resume_or_cover_letter(template2_name_field.value),
+                apply_replacements(template2_name_field.value,
                                    replacements.copy(),
                                    job_title, employer_name,
                                    job_id,
