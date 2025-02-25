@@ -4,12 +4,14 @@ Application Tracker, Resume and Cover Letter Maker
 
 ## Current features _(partial list)_
 
-1. Placeholders names ``position`` can be replaced automatically, using the values from the drop-down menu in the appropriate window.
-2. Auto-increments file names if the name already exists (in the ``docs\Applications`` folder).
-3. Automatically prepends the creation date to older PDFs file names if there's a conflict with a new pdf.
-4. Automatically fills in the last used templates.
-5. Placeholders with identical labels are treated as identical, allowing you to save time by re-using common placeholders (see ``position`` above).
-6. Where a placeholder spans multiple Runs, formatting will be based on the first Run in the group.
+1. Database to keep track of previous job applications, including the specific values used for each placeholder.
+2. Autofill for placeholders named ``position`` (case-sensitive; substring or otherwise): as a substring will be automatically replaced with the position's title (requires picking the relevant position first).
+    1. This is done only in empty fields.
+3. Auto-increments file names if the name already exists (in the ``docs\Applications`` folder).
+4. Automatically prepends the creation date to older PDFs file names if there's a conflict with a new pdf.
+5. Automatically fills in the last used templates.
+6. Placeholders with identical labels are treated as identical, allowing you to save time by re-using common placeholders (see ``position`` above).
+7. Where a placeholder spans multiple Runs, formatting will be based on the first Run in the group.
     1. a Run is the main structure of ``docx`` files.
 
 ### Placeholders Explanation
@@ -47,24 +49,27 @@ Feedback is welcome; please use "Feedback: Flet_Application_Tracker" in your ema
 ## Roadmap of Future Development
 
 1. Enable link replacement
-2. Enable On-Off placeholders
-3. Enable Multi-level Placeholders
-4. Enable a methodology to extract keywords from job postings for faster automatic replacement.
-5. Enable use of links in placeholders.
-6. Enable 'history' to allow to pick from past values.
-7. Add optional links to employers.
-8. Allow multiple links for each job posting and employer for increased flexibility.
-9. Expand on use of variables and tags.
-10. Add contacts.
-11. Add communication tracking.
-12. Improve the consistency of placeholders' behaviour.
-13. _Done_ ~~Add a ``requirments.txt``~~
-14. Improve the data view window.
-15. Deploy on GitHub pages (or elsewhere).
-16. Extend functionality to ``.odt`` (Libra Office's Writer file format)
-17. Extend functionality to ``.pages`` (Apple's Pages file format)
-18. Use [Black](https://github.com/psf/black) for code formatting (as advised by [Flet](https://flet.dev/)'s official dev team)
-19. Enable working with job search engines (LinkedIn, Indeed, Monster).
-20. More informative presentation of placeholders.
-21. Improve Accessibility.
-22. Create a wiki, tutorials and/or how-to guides.
+2. Add additional automatic-replacements capabilities (similar to 'position').
+3. Enable On-Off placeholders
+4. Enable Multi-level Placeholders
+5. Enable a methodology to extract keywords from job postings for faster automatic replacement.
+6. Enable use of links in placeholders.
+7. Enable 'history' to allow to pick from past values.
+8. Add optional links to employers.
+9. Allow multiple links for each job posting and employer for increased flexibility.
+10. Expand on use of variables and tags.
+11. Add contacts.
+12. Add communication tracking.
+13. Improve the consistency of placeholders' behaviour.
+14. _Done_ ~~Add a ``requirments.txt``~~
+15. Improve the data view window.
+16. Deployment as a stand-alone app, either on a website or as an installation file for desktop.
+    1. Potentially also as an Android and/or iOS app.
+17. Extend functionality to ``.odt`` (Libra Office's Writer file format)
+18. Extend functionality to ``.pages`` (Apple's Pages file format)
+19. Use [Black](https://github.com/psf/black) for code formatting (as advised by [Flet](https://flet.dev/)'s official dev team)
+20. Enable working with job search engines (LinkedIn, Indeed, Monster).
+21. More informative presentation of placeholders.
+22. Improve accessibility.
+23. Improve portability.
+24. Create a wiki, tutorials and/or how-to guides.
