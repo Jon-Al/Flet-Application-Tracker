@@ -8,9 +8,11 @@
 6. Expand on use of variable, tags.
 7. Add communication tracking.
 8. Add contacts.
-9. Streamline placeholders - placeholders will use a more consistent pattern (to be defined).
-10. Add a ``requirments.txt``
+9. Improve the consistency of placeholders' behaviour.
+10. _Done_ ~~Add a ``requirments.txt``~~
 11. Use [Black](https://github.com/psf/black) for code formatting (as advised by [Flet](https://flet.dev/)'s official dev team)
+12. Improve the visual presentation in the app.
+13. Deploy on GitHub pages (or elsewhere).
 
 ### Current special features
 
