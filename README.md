@@ -1,22 +1,8 @@
-### Roadmap of Future Development
+# Job Seekers' Friendly Tool For Quick Search Management
 
-1. Enable link replacement
-2. Enable On-Off placeholders
-3. Enable Multi-level Placeholders
-4. Enable a methodology to extract various keywords from job postings.
-5. Enable 'history' of sorts - allow to pick from past values.
-6. Expand on use of variable, tags.
-7. Add communication tracking.
-8. Add contacts.
-9. Improve the consistency of placeholders' behaviour.
-10. _Done_ ~~Add a ``requirments.txt``~~
-11. Use [Black](https://github.com/psf/black) for code formatting (as advised by [Flet](https://flet.dev/)'s official dev team)
-12. Improve the visual presentation in the app.
-13. Deploy on GitHub pages (or elsewhere).
-14. Extend functionality to ``.odt`` (Libra Office's Writer file format)
-15. Extend functionality to ``.pages`` (Apple's Pages file format)
+Application Tracker, Resume and Cover Letter Maker
 
-### Current features _(partial list)_
+## Current features _(partial list)_
 
 1. Placeholders names ``position`` can be replaced automatically, using the values from the drop-down menu in the appropriate window.
 2. Auto-increments file names if the name already exists (in the ``docs\Applications`` folder).
@@ -41,19 +27,44 @@ Placeholders are special markers in the text that get replaced with actual value
     - **``@`` (Grouping Separator, Not Fully Implemented)**: Used to split placeholders into groups for structured replacements.
         - Example: `[[|Job Title@Company Name|Company]]` → Indicates a grouping; only "Company Name" will be used for the label.
 
-### On-Off Placeholders
+#### On-Off Placeholders
 
 Once implemented, these will allow dynamic use of a [Flet](https://flet.dev/) [Switch](https://flet.dev/docs/controls/switch/) to remove entire sections of the text.
 
-### Multi-level Placeholders
+#### Multi-level Placeholders
 
 Once implemented, these will enable nesting, where one placeholder can resolve into another, allowing for structured replacements.
 
-### Other Useful Information
+#### Other Useful Information
 
 Feedback is welcome; please use "Feedback: Flet_Application_Tracker" in your email's subject. [JASoftware@proton.me](mailto:JASoftware@proton.me) _Feedback welcome!_
 
-### Related Links
+## Related Links
 
 * [Felt GitHub repository](https://github.com/flet-dev/flet)
 * [Flet website](https://flet.dev/)
+
+## Roadmap of Future Development
+
+1. Enable link replacement
+2. Enable On-Off placeholders
+3. Enable Multi-level Placeholders
+4. Enable a methodology to extract keywords from job postings for faster automatic replacement.
+5. Enable use of links in placeholders.
+6. Enable 'history' to allow to pick from past values.
+7. Add optional links to employers.
+8. Allow multiple links for each job posting and employer for increased flexibility.
+9. Expand on use of variables and tags.
+10. Add contacts.
+11. Add communication tracking.
+12. Improve the consistency of placeholders' behaviour.
+13. _Done_ ~~Add a ``requirments.txt``~~
+14. Improve the data view window.
+15. Deploy on GitHub pages (or elsewhere).
+16. Extend functionality to ``.odt`` (Libra Office's Writer file format)
+17. Extend functionality to ``.pages`` (Apple's Pages file format)
+18. Use [Black](https://github.com/psf/black) for code formatting (as advised by [Flet](https://flet.dev/)'s official dev team)
+19. Enable working with job search engines (LinkedIn, Indeed, Monster).
+20. More informative presentation of placeholders.
+21. Improve Accessibility.
+22. Create a wiki, tutorials and/or how-to guides.
