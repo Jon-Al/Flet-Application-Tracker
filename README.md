@@ -13,14 +13,18 @@
 11. Use [Black](https://github.com/psf/black) for code formatting (as advised by [Flet](https://flet.dev/)'s official dev team)
 12. Improve the visual presentation in the app.
 13. Deploy on GitHub pages (or elsewhere).
+14. Extend functionality to ``.odt`` (Libra Office's Writer file format)
+15. Extend functionality to ``.pages`` (Apple's Pages file format)
 
-### Current special features
+### Current features _(partial list)_
 
 1. Placeholders names ``position`` can be replaced automatically, using the values from the drop-down menu in the appropriate window.
 2. Auto-increments file names if the name already exists (in the ``docs\Applications`` folder).
 3. Automatically prepends the creation date to older PDFs file names if there's a conflict with a new pdf.
 4. Automatically fills in the last used templates.
 5. Placeholders with identical labels are treated as identical, allowing you to save time by re-using common placeholders (see ``position`` above).
+6. Where a placeholder spans multiple Runs, formatting will be based on the first Run in the group.
+    1. a Run is the main structure of ``docx`` files.
 
 ### Placeholders Explanation
 
