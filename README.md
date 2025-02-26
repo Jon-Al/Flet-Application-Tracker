@@ -13,6 +13,7 @@ Application Tracker, Resume and Cover Letter Maker
 6. Placeholders with identical labels are treated as identical, allowing you to save time by re-using common placeholders (see ``position`` above).
 7. Where a placeholder spans multiple Runs, formatting will be based on the first Run in the group.
     1. a Run is the main structure of ``docx`` files.
+8. Tested on Windows, functionality may differ on other platforms.
 
 ### Placeholders Explanation
 
@@ -42,7 +43,7 @@ Once implemented, these will enable nesting, where one placeholder can resolve i
 * [Felt GitHub repository](https://github.com/flet-dev/flet)
 * [Flet website](https://flet.dev/)
 
-## Roadmap of Future Development
+## Plans for Future Development
 
 1. Enable link replacement
 2. Add additional automatic-replacements capabilities (similar to 'position').
@@ -59,15 +60,21 @@ Once implemented, these will enable nesting, where one placeholder can resolve i
 13. Improve the consistency of placeholders' behaviour.
 14. _Done_ ~~Add a ``requirments.txt``~~
 15. Improve the data view window.
-16. Deployment as a stand-alone app, either on a website or as an installation file for desktop.
-    1. Potentially also as an Android and/or iOS app.
-17. Extend functionality to ``.odt`` (Libra Office's Writer file format)
-18. Extend functionality to ``.pages`` (Apple's Pages file format)
-19. Use [Black](https://github.com/psf/black) for code formatting (as advised by [Flet](https://flet.dev/)'s official dev team)
-20. Enable working with job search engines (LinkedIn, Indeed, Monster).
-21. More informative presentation of placeholders.
-22. Improve accessibility.
-23. Improve portability.
-24. Create a wiki, tutorials and/or how-to guides.
-25. ``PathManager``: Edge cases.
-    1. Ensure ``PathManager`` handles cases where the provided path already includes Year/Month/Day to prevent redundant nesting and recursive path creation.
+16. Portability:
+    1. Make portable to non-windows platforms (Mac, Linux, iOS, Android)
+17. Deployment:
+    1. Desktop (downloadable installation/exe).
+    2. Web or Website.
+    3. Android and/or iOS app.
+18. Use [Black](https://github.com/psf/black) for code formatting (as advised by [Flet](https://flet.dev/)'s official dev team).
+19. Enable working with job search engines (LinkedIn, Indeed, Monster).
+20. More informative presentation of placeholders.
+21. Improve accessibility.
+22. Improve portability.
+23. Create a wiki, tutorials and/or how-to guides.
+24. ``DocManager``:
+    1. Extend functionality to ``.odt`` files (Libra Office's Writer file format).
+    2. Extend functionality to ``.pages`` files (Apple's Pages file format).
+25. ``PathManager``:
+    1. Edge cases.
+        1. Ensure ``PathManager`` handles cases where the provided path already includes Year/Month/Day to prevent redundant nesting and recursive path creation. 
