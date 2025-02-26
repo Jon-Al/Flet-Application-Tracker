@@ -37,10 +37,6 @@ Once implemented, these will allow dynamic use of a [Flet](https://flet.dev/) [S
 
 Once implemented, these will enable nesting, where one placeholder can resolve into another, allowing for structured replacements.
 
-#### Other Useful Information
-
-Feedback is welcome; please use "Feedback: Flet_Application_Tracker" in your email's subject. [JASoftware@proton.me](mailto:JASoftware@proton.me) _Feedback welcome!_
-
 ## Related Links
 
 * [Felt GitHub repository](https://github.com/flet-dev/flet)
