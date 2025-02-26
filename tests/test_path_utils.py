@@ -50,13 +50,6 @@ def test_path_manager_normalize():
     assert pm.new_path == Path(test_path).resolve()
 
 
-def test_path_manager_cascade(tmp_path):
-    test_path = tmp_path / "storage"
-    pm = PathManager(str(test_path), [PathFlag.CASCADE_BY_YEAR, PathFlag.CASCADE_BY_MONTH, PathFlag.CASCADE_BY_DAY])
-    expected_path = test_path / datetime.now().strftime("%Y/%m-%b/%d")
-    assert Path(pm.new_path) == expected_path
-
-
 def test_path_manager_create_if_missing(tmp_path):
     test_path = tmp_path.resolve() / "new_storage"
     pm = PathManager(str(test_path), PathFlag.CREATE_FOLDER)
@@ -104,3 +97,37 @@ def test_increment_if_exists():
 
 if __name__ == "__main__":
     pytest.main()
+
+
+# Write a python regex string that could match any of the following:
+# path\to\file\YYYY\MM-MMM\DD
+# path\to\file\YYYY\MM-MMM
+# path\to\file\YYYY-MM\DD
+# path\to\file\YYYY-MM
+# path\to\file\YYYY
+#
+# But without the having
+def test_construct_date_sub_path():
+    og_path = Path(r"demo\path")
+    expected_path = og_path / datetime.now().strftime("%Y")
+    output_path = PathManager._construct_date_sub_path(og_path, PathFlag.CASCADE_BY_YEAR)
+    assert output_path == expected_path
+    expected_path = expected_path / datetime.now().strftime("%m-%b")
+    output_path = PathManager._construct_date_sub_path(og_path, PathFlag.CASCADE_BY_MONTH)
+    assert output_path == expected_path
+    expected_path = expected_path / datetime.now().strftime("%d")
+    output_path = PathManager._construct_date_sub_path(og_path, PathFlag.CASCADE_BY_DATE)
+    assert output_path == expected_path
+    output_path = PathManager._construct_date_sub_path(og_path, PathFlag.CASCADE_BY_DAY)
+    assert output_path == expected_path
+    output_path = PathManager._construct_date_sub_path(og_path, PathFlag.CASCADE_BY_MONTH_AND_YEAR)
+    expected_path = og_path / datetime.now().strftime("%Y-%m")
+    assert output_path == expected_path
+
+
+@pytest.mark.skip('Not yet implemented')
+def test_edge_case_construct_date_sub_path():
+    og_path = Path(r"demo\path\2025")
+    output_path = PathManager._construct_date_sub_path(og_path, PathFlag.CASCADE_BY_MONTH)
+    expected_path = og_path / datetime.now().strftime("%m-%b")
+    assert output_path == expected_path

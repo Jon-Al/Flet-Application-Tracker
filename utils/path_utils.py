@@ -82,7 +82,7 @@ class PathFlag(enum.IntFlag):
     NORMALIZE = N = enum.auto()
     """``path.resolve``. Currently always active."""
     CREATE_FOLDER = C = enum.auto()
-    """creates the path if it doesn't exist. Creates the parent folder to the file if a file."""
+    """Creates the path if it doesn't exist. Only applicable for folders."""
     CASCADE_BY_YEAR = Y = enum.auto()
     """Creates folder named 'yyyy'."""
     CASCADE_BY_MONTH = M = enum.auto()
@@ -125,14 +125,20 @@ class PathManager:
     def create_dir_path(path: Union[str, Path]):
         """Creates the path for the new path. Stops at parent if path is a file."""
         path = PathManager.resolve_path(path)
+        if path.is_dir():
+            return path
+        if path.is_file():
+            return path.parent
         if PathManager._is_intended_directory(path):
             path.mkdir(parents=True, exist_ok=True)
+            return path
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
+            return path.parent
 
 
     @staticmethod
-    def _is_intended_directory(path: Path) -> bool:
+    def _is_intended_directory(path: Path, make_path: bool = False) -> bool:
         """
         Determines if a path is intended to be a directory, even if it doesn't exist yet.
 
@@ -145,7 +151,7 @@ class PathManager:
         """
         if path.exists():
             return path.is_dir()
-        if path.suffix == '':
+        if path.suffix == '' and make_path:
             path.mkdir(parents=True, exist_ok=True)
         path_str = str(path)
         if path_str.endswith(os.path.sep):
@@ -189,7 +195,7 @@ class PathManager:
     @staticmethod
     def get_next_available_name(path: Path) -> Path:
         """Get the next available filename by adding incremental number."""
-        if not path.exists() or PathManager._is_intended_directory(path):
+        if not path.exists() or PathManager._is_intended_directory(path, False):
             return path
         parent = path.parent
         stem = path.stem
@@ -203,37 +209,42 @@ class PathManager:
             counter += 1
 
     @staticmethod
+    def _construct_date_sub_path(this_path: Path, flags) -> Path:
+        """Pre-appends the date (yyyy/mmm/dd, as required) to ``this_path``. \n
+        Doesn't create directories."""
+        sub_path = Path()
+        if PathFlag.CASCADE_BY_DAY & flags or PathFlag.CASCADE_BY_MONTH & flags or PathFlag.CASCADE_BY_YEAR & flags:
+            sub_path = sub_path / datetime.now().strftime("%Y")
+            if PathFlag.CASCADE_BY_DAY & flags or PathFlag.CASCADE_BY_MONTH & flags:
+                sub_path = sub_path / datetime.now().strftime("%m-%b")
+        elif PathFlag.CASCADE_BY_MONTH_AND_YEAR & flags:
+            sub_path = sub_path / datetime.now().strftime("%Y-%m")
+        if PathFlag.CASCADE_BY_DAY & flags:
+            sub_path = sub_path / datetime.now().strftime("%d")
+        return this_path / sub_path
+
+    @staticmethod
     def _apply_flags(path: Union[str, Path], flags: Union[List[PathFlag] | PathFlag]) -> Path:
         """Applies the selected flags in a defined order."""
 
-        if PathFlag.FROM_PROJECT_ROOT in flags:
-            path = Path(get_project_root()) / path
+        if PathFlag.FROM_PROJECT_ROOT & flags:
+            path = (Path(get_project_root()) / path)
         else:
-            path = Path(path)
+            path = Path(path).resolve()
+        path_is_dir = PathManager._is_intended_directory(path)
+        if not path_is_dir:
+            date_sub_path = PathManager._construct_date_sub_path(path.parent, flags)
+        else:
+            date_sub_path = PathManager._construct_date_sub_path(path, flags)
 
-        if PathFlag.CASCADE_BY_DAY in flags or PathFlag.CASCADE_BY_MONTH in flags or PathFlag.CASCADE_BY_YEAR in flags:
-            path = path / datetime.now().strftime("%Y")
-
-        if PathFlag.CASCADE_BY_DAY in flags or PathFlag.CASCADE_BY_MONTH in flags:
-            path = path / datetime.now().strftime("%m-%b")
-
-        if PathFlag.CASCADE_BY_MONTH_AND_YEAR in flags:
-            path = path / datetime.now().strftime("%Y-%m")
-
-        if PathFlag.CASCADE_BY_DAY in flags:
-            path = path / datetime.now().strftime("%d")
-
-        if PathFlag.NORMALIZE in flags:
+        if PathFlag.NORMALIZE & flags:
             path = path.resolve()
 
-        if (not path.is_dir()) and (PathFlag.INCREMENT_IF_EXISTS in flags):
+        if (not PathManager._is_intended_directory(path)) and (PathFlag.INCREMENT_IF_EXISTS & flags):
             path = PathManager.get_next_available_name(path)
 
         if PathFlag.CREATE_FOLDER in flags:
-            if PathManager._is_intended_directory(path):
-                path.mkdir(parents=True, exist_ok=True)
-            else:
-                path.parent.mkdir(parents=True, exist_ok=True)
+            candidate = PathManager.create_dir_path(path)
         if PathFlag.VALIDATE in flags:
             if not path.exists():
                 raise NotADirectoryError(f"Path '{path}' does not exist.")
@@ -267,11 +278,11 @@ class PathManager:
 
     def original_is_dir(self) -> bool:
         """Checks if the original path is a directory or intended to be one"""
-        return self._is_intended_directory(self.original_path)
+        return self._is_intended_directory(self.original_path, False)
 
     def new_is_dir(self) -> bool:
         """Checks if the new path is a directory or intended to be one"""
-        return self._is_intended_directory(self.new_path)
+        return self._is_intended_directory(self.new_path, False)
 
     @property
     def new_path_stem(self) -> str:

@@ -69,3 +69,5 @@ Once implemented, these will enable nesting, where one placeholder can resolve i
 22. Improve accessibility.
 23. Improve portability.
 24. Create a wiki, tutorials and/or how-to guides.
+25. ``PathManager``: Edge cases.
+    1. Ensure ``PathManager`` handles cases where the provided path already includes Year/Month/Day to prevent redundant nesting and recursive path creation.
